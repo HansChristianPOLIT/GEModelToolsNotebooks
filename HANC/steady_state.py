@@ -11,7 +11,8 @@ import root_finding
 import household_problem
 
 def prepare_hh_ss(model):
-    """ prepare the household block to solve for steady state """
+    """ prepare the household block to solve for steady state: set grids, transition matrix of stochastic
+    discrete states, initial distribution, and initial guess for intertemporal variables """
 
     par = model.par
     ss = model.ss
@@ -24,11 +25,11 @@ def prepare_hh_ss(model):
     if par.Nphi == 1:
         phi_grid = np.array([1.0])
     elif par.Nphi == 3:
-        phi_grid = np.array([1-par.phi_delta,1,1+par.phi_delta])
+        phi_grid = np.array([1-par.phi_delta,1,1+par.phi_delta]) # dispersion in ability
     else:
         raise NotImplementedError
 
-    beta_grid = np.linspace(par.beta_mean-par.beta_delta,par.beta_mean+par.beta_delta,par.Nbeta)
+    beta_grid = np.linspace(par.beta_mean-par.beta_delta,par.beta_mean+par.beta_delta,par.Nbeta) # dispersion in patience
 
     par.phi_grid[:] = np.tile(phi_grid,par.Nbeta)
     par.beta_grid[:] = np.repeat(beta_grid,par.Nphi)
@@ -81,7 +82,7 @@ def obj_ss(K_ss,model,do_print=False):
         print(f'implied {ss.w = :.4f}')
 
     model.solve_hh_ss(do_print=do_print)
-    model.simulate_hh_ss(do_print=do_print)
+    model.simulate_hh_ss(do_print=do_print) # simulate forwards to steady state. Link: https://github.com/NumEconCopenhagen/GEModelTools/blob/master/GEModelTools/simulate_hh.py
 
     if do_print: print(f'implied {ss.A_hh = :.4f}')
 

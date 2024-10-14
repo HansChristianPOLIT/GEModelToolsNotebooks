@@ -10,10 +10,11 @@ import blocks
 class HANCModelClass(EconModelClass,GEModelClass):    
 
     def settings(self):
-        """ fundamental settings """
+        """ fundamental settings: specify hh variables, agg. shocks, unknowns, targets and blocks. """
 
         # a. namespaces (typically not changed)
-        self.namespaces = ['par','ini','sim','ss','path']
+        # .par alle parameters (no t subscript), .ss and .path all actual variables
+        self.namespaces = ['par','ini','sim','ss','path'] 
         
         # b. household
         self.grids_hh = ['a'] # grids
@@ -37,7 +38,7 @@ class HANCModelClass(EconModelClass,GEModelClass):
         self.solve_hh_backwards = household_problem.solve_hh_backwards
 
     def setup(self):
-        """ set baseline parameters """
+        """ set all independent baseline parameters """
 
         par = self.par
 
@@ -91,7 +92,7 @@ class HANCModelClass(EconModelClass,GEModelClass):
         par.warnings = True # print warnings if nans are encountered
 
     def allocate(self):
-        """ allocate model """
+        """ allocate model: set all dependent parameters """
 
         par = self.par
 
